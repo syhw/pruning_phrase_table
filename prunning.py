@@ -1,8 +1,17 @@
-import sys #, re
+"""
+An implementation of:
+Improving Translation Quality by Discarding Most of the Phrasetable (Johnson, Martin, Foster, Kuhn 2007)
+
+Usage: 
+    -d debug symbols
+"""
+# Copyright (C) 2009 
+# Author: Gabriel Synnaeve
+# License: http://www.opensource.org/licenses/PythonSoftFoundation.php
+
+import sys 
 
 #f = open('/Volumes/BLACKDATA/apertium/phrase-table')
-    #remove = re.compile("#\[\]")
-    #table = remove.sub('', line).strip().split('|||')
 file = open('tiny.sample')
 i = 0
 
@@ -12,7 +21,7 @@ count_st = {}
 
 def count(line):
     table = line.strip().replace('#','').replace('[','').replace(']','')\
-            .split('|||')
+            .split('|||') # seems to be faster than with the RE '$\[\]'
     source = table[0]
     target = table[1]
     if source in count_s:
@@ -23,7 +32,6 @@ def count(line):
         count_t[target] +=  1
     else:
         count_t[target] =  1
-    #st = source + '#%#' + target
     st = (source, target)
     if st in count_st:
         count_st[st] +=  1
@@ -46,14 +54,9 @@ for k in count_t.iterkeys():
             tmp += v
     count_t[k] += tmp
 
-#for k in count_st.keys():
 for (ks, kt) in count_st.iterkeys():
-    #ktable = k.split('#%#')
     tmp = 0
     for ((s, t), v) in count_st.iteritems():
-        #sttable = st.split('#%#')
-        #if ktable[0] in sttable[0] and ktable[0] != sttable[0] \
-        #        and ktable[1] in sttable[1] and ktable[1] != sttable[1]:
         if ks in s and ks != s and kt in t and kt != t:
             tmp += v
     count_st[(ks, kt)] += tmp
