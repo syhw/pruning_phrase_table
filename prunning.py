@@ -1,3 +1,4 @@
+#!/opt/local/bin/python2.5
 """
 An implementation of:
 Improving Translation Quality by Discarding Most of the Phrasetable (Johnson, Martin, Foster, Kuhn 2007)
@@ -9,10 +10,11 @@ Usage:
 # Author: Gabriel Synnaeve
 # License: http://www.opensource.org/licenses/PythonSoftFoundation.php
 
-import sys 
+import sys, guppy
+h = guppy.hpy()
 
 #f = open('/Volumes/BLACKDATA/apertium/phrase-table')
-file = open('tiny.sample')
+file = open('test.sample')
 i = 0
 
 count_s = {}
@@ -40,11 +42,15 @@ def count(line):
 
 map(count, file)
 
+#sdic = {}
+#tdic = {}
+
 for k in count_s.iterkeys():
     tmp = 0
     for (s, v) in count_s.iteritems():
         if k in s and k != s:
             tmp += v
+#            sdic[(k,s)] = True
     count_s[k] += tmp
 
 for k in count_t.iterkeys():
@@ -52,12 +58,19 @@ for k in count_t.iterkeys():
     for (t, v) in count_t.iteritems():
         if k in t and k != t:
             tmp += v
+#            tdic[(k,t)] = True
     count_t[k] += tmp
+
+print h.heap()
+print len(sset)
+print len(tset)
+print '-----------'
 
 for (ks, kt) in count_st.iterkeys():
     tmp = 0
     for ((s, t), v) in count_st.iteritems():
         if ks in s and ks != s and kt in t and kt != t:
+#        if (ks,s) in sdic and (kt,t) in tdic:
             tmp += v
     count_st[(ks, kt)] += tmp
 
