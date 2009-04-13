@@ -15,7 +15,7 @@ import sys
 #h = guppy.hpy()
 
 #f = open('/Volumes/BLACKDATA/apertium/phrase-table')
-file = open('tiny.sample')
+file = open('test.sample')
 i = 0
 
 count_s = {}
@@ -50,6 +50,7 @@ map(count, file)
 
 included_in_s = {}
 included_in_t = {}
+sets = {}
 
 for k in count_s.iterkeys():
     tmp = 0
@@ -58,6 +59,8 @@ for k in count_s.iterkeys():
         if k in s and k != s:
             tmp += v
             dico[s] = True
+            if not s in sets:
+                sets[s] = set(dict_st[s].keys())
     included_in_s[k] = dico
     count_s[k] += tmp
 
@@ -77,9 +80,9 @@ for ks, kdic in dict_st.iteritems():
         # kt is in every element of kt_lesser_than
         kt_lesser_than = included_in_t[kt]
         kt_lesser_than = set(kt_lesser_than.keys())
-        for s in ks_lesser_than.iterkeys(): # optim ?
+        for s in ks_lesser_than.iterkeys():
             # we know that 'ks in s'
-            intersect = kt_lesser_than & set(dict_st[s].keys())
+            intersect = kt_lesser_than & sets[s]
             tmp = 0
             for e in intersect:
                 tmp += dict_st[s][e]

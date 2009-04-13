@@ -10,11 +10,11 @@ Usage:
 # Author: Gabriel Synnaeve
 # License: http://www.opensource.org/licenses/PythonSoftFoundation.php
 
-import sys, guppy
-h = guppy.hpy()
+import sys #, guppy
+#h = guppy.hpy()
 
 #f = open('/Volumes/BLACKDATA/apertium/phrase-table')
-file = open('test.sample')
+file = open('big.sample')
 i = 0
 
 count_s = {}
@@ -72,12 +72,12 @@ for (ks, kt) in count_st.iterkeys():
 
 
 if '-d' in sys.argv:
-    print h.heap()
-    print len(sset)
-    print len(tset)
+    #print h.heap()
     print '============================'
     print count_s
     print '============================'
     print count_t
     print '============================'
     print count_st
+
+
