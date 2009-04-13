@@ -61,10 +61,6 @@ for k in count_t.iterkeys():
 #            tdic[(k,t)] = True
     count_t[k] += tmp
 
-print h.heap()
-print len(sset)
-print len(tset)
-print '-----------'
 
 for (ks, kt) in count_st.iterkeys():
     tmp = 0
@@ -76,6 +72,9 @@ for (ks, kt) in count_st.iterkeys():
 
 
 if '-d' in sys.argv:
+    print h.heap()
+    print len(sset)
+    print len(tset)
     print '============================'
     print count_s
     print '============================'
