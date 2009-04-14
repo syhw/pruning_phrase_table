@@ -107,7 +107,6 @@ if debug:
     print count_st
     print '============================'
 
-##import numpy
 delete = []
 threshold = math.log(N) - 0.01
 print threshold
@@ -120,8 +119,7 @@ for k in count_st.iterkeys():
         # The value is so low that even your mother can't ... oh sh** 
         # Discard this entry
         delete.append(k)
-    ##hypergeom = numpy.random.hypergeometric(count_t[k[1]], count_s[k[0]], N)
-    ##print hypergeom
 
-    
+print file[3]
+
 print delete
