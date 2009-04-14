@@ -5,6 +5,8 @@ Improving Translation Quality by Discarding Most of the Phrasetable (Johnson, Ma
 
 Usage: 
     -d debug symbols
+    -i input file
+    -o ouput file
 """
 # Copyright (C) 2009 
 # Author: Gabriel Synnaeve
@@ -76,15 +78,11 @@ for line in file:
     N += 1
     count(line)
 
-#sdic = {}
-#tdic = {}
-
 for k in count_s.iterkeys():
     tmp = 0
     for (s, v) in count_s.iteritems():
         if k in s and k != s:
             tmp += v
-#            sdic[(k,s)] = True
     count_s[k] += tmp
 
 for k in count_t.iterkeys():
@@ -92,7 +90,6 @@ for k in count_t.iterkeys():
     for (t, v) in count_t.iteritems():
         if k in t and k != t:
             tmp += v
-#            tdic[(k,t)] = True
     count_t[k] += tmp
 
 
@@ -100,7 +97,6 @@ for (ks, kt) in count_st.iterkeys():
     tmp = 0
     for ((s, t), v) in count_st.iteritems():
         if ks in s and ks != s and kt in t and kt != t:
-#        if (ks,s) in sdic and (kt,t) in tdic:
             tmp += v
     count_st[(ks, kt)] += tmp
 
