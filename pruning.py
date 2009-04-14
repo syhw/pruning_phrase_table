@@ -16,32 +16,35 @@ import sys, getopt, math #, guppy
 from fisher import FisherExactTest
 fish = FisherExactTest()
 
-i = 0
-
-count_s = {}
-count_t = {}
-count_st = {}
-debug = 0
-
 def Usage():
     print "./pruning.py phrase-table [-d][-h][-o outputfile]"
     sys.exit(0)
 
 try:
-    optlist, list = getopt.getopt(sys.argv[1:],':doh')
+    opts, args = getopt.getopt(sys.argv[1:],'di:o:h')
 except getopt.GetoptError:
     Usage()
-    sys.exit(1)
-for opt in optlist:
-    print opt[0]
-    if opt[0] == '-h':
+    sys.exit(2)
+debug = 0
+for o, a in opts:
+    if o == '-h':
         Usage()
-    if opt[0] == '-d':
+    elif o == '-d':
         debug = 1
-    if opt[0] == '-o':
-        outputname = list[0]
+    elif o == '-i':
+        inputname = a
+    elif o == '-o':
+        outputname = a
+    else:
+        assert False, "unhandled option"
 
-file = open(sys.argv[1])
+#file = open(sys.argv[1])
+file = open(inputname)
+
+count_s = {}
+count_t = {}
+count_st = {}
+lines = {}
 
 def count(line):
     table = line.replace('#','').replace('[','').replace(']','')\
@@ -62,12 +65,16 @@ def count(line):
         count_st[st] +=  1
     else:
         count_st[st] =  1
+    if st in lines:
+        lines[st].append(N)
+    else:
+        lines[st] = [N]
 
 #map(count, file)
 N = 0
 for line in file:
-    count(line)
     N += 1
+    count(line)
 
 #sdic = {}
 #tdic = {}
@@ -97,6 +104,8 @@ for (ks, kt) in count_st.iterkeys():
             tmp += v
     count_st[(ks, kt)] += tmp
 
+file.close()
+
 if debug:
     #print h.heap()
     print '===========count_s============='
@@ -108,18 +117,37 @@ if debug:
     print '============================'
 
 delete = []
-threshold = math.log(N) - 0.01
-print threshold
+threshold = math.log(N) + 0.01
+if debug:
+    print ">>> Threshold :", 
+    print threshold
 for k in count_st.iterkeys():
     try:
+        #print -math.log( fish.pvalue(count_st[k], count_s[k[0]], \
+        #        count_t[k[1]], N) [1] ) 
+        #print k
         if -math.log( fish.pvalue(count_st[k], count_s[k[0]], \
-                count_t[k[1]], N) [2] ) > threshold:
-            delete.append(k)
+                count_t[k[1]], N) [1] ) > threshold:
+            for l in lines[k]:
+                delete.append(l)
     except OverflowError:
-        # The value is so low that even your mother can't ... oh sh** 
+        # The value is so low that even your mo****
         # Discard this entry
-        delete.append(k)
+        for l in lines[k]:
+            delete.append(l)
 
-print file[3]
+delete.sort() 
 
-print delete
+if debug:
+    print ">>> Lines to delete:",
+    print delete
+
+file = open(inputname)
+outputfile = open(outputname, 'w')
+i = 0
+for line in file:
+    i += 1
+    if not i in delete:
+        outputfile.write(line)
+outputfile.close()
+
