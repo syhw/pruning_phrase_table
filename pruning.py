@@ -13,8 +13,11 @@ Usage:
 import sys #, guppy
 #h = guppy.hpy()
 
+from fisher import FisherExactTest
+fish = FisherExactTest()
+
 #f = open('/Volumes/BLACKDATA/apertium/phrase-table')
-file = open('big.sample')
+file = open('test.sample')
 i = 0
 
 count_s = {}
@@ -40,7 +43,11 @@ def count(line):
     else:
         count_st[st] =  1
 
-map(count, file)
+#map(count, file)
+N = 0
+for line in file:
+    count(line)
+    N += 1
 
 #sdic = {}
 #tdic = {}
@@ -80,4 +87,15 @@ if '-d' in sys.argv:
     print '============================'
     print count_st
 
+##import numpy
+for k in count_st.iterkeys():
+    try:
+        print fish.pvalue(count_st[k], count_s[k[0]], count_t[k[1]], N)
+    except OverflowError:
+        # The value is so low that even your mother can't ... oh sh** 
+        # Discard this entry
+        print "overflow error" 
+    ##hypergeom = numpy.random.hypergeometric(count_t[k[1]], count_s[k[0]], N)
+    ##print hypergeom
+    
 
