@@ -10,23 +10,43 @@ Usage:
 # Author: Gabriel Synnaeve
 # License: http://www.opensource.org/licenses/PythonSoftFoundation.php
 
-import sys #, guppy
+import sys, getopt, math #, guppy
 #h = guppy.hpy()
 
 from fisher import FisherExactTest
 fish = FisherExactTest()
 
-#f = open('/Volumes/BLACKDATA/apertium/phrase-table')
-file = open('test.sample')
 i = 0
 
 count_s = {}
 count_t = {}
 count_st = {}
+debug = 0
+
+def Usage():
+    print "./pruning.py phrase-table [-d][-h][-o outputfile]"
+    sys.exit(0)
+
+try:
+    optlist, list = getopt.getopt(sys.argv[1:],':doh')
+except getopt.GetoptError:
+    Usage()
+    sys.exit(1)
+for opt in optlist:
+    print opt[0]
+    if opt[0] == '-h':
+        Usage()
+    if opt[0] == '-d':
+        debug = 1
+    if opt[0] == '-o':
+        outputname = list[0]
+
+file = open(sys.argv[1])
 
 def count(line):
-    table = line.strip().replace('#','').replace('[','').replace(']','')\
-            .split('|||') # seems to be faster than with the RE '$\[\]'
+    table = line.replace('#','').replace('[','').replace(']','')\
+            .replace('?','').replace('!','').strip().split('|||') 
+            # seems to be faster than with the RE '#\[\]?!'
     source = table[0]
     target = table[1]
     if source in count_s:
@@ -77,25 +97,31 @@ for (ks, kt) in count_st.iterkeys():
             tmp += v
     count_st[(ks, kt)] += tmp
 
-
-if '-d' in sys.argv:
+if debug:
     #print h.heap()
-    print '============================'
+    print '===========count_s============='
     print count_s
-    print '============================'
+    print '===========count_t============='
     print count_t
-    print '============================'
+    print '===========count_st============='
     print count_st
+    print '============================'
 
 ##import numpy
+delete = []
+threshold = math.log(N) - 0.01
+print threshold
 for k in count_st.iterkeys():
     try:
-        print fish.pvalue(count_st[k], count_s[k[0]], count_t[k[1]], N)
+        if -math.log( fish.pvalue(count_st[k], count_s[k[0]], \
+                count_t[k[1]], N) [2] ) > threshold:
+            delete.append(k)
     except OverflowError:
         # The value is so low that even your mother can't ... oh sh** 
         # Discard this entry
-        print "overflow error" 
+        delete.append(k)
     ##hypergeom = numpy.random.hypergeometric(count_t[k[1]], count_s[k[0]], N)
     ##print hypergeom
-    
 
+    
+print delete
