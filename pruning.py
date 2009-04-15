@@ -113,7 +113,7 @@ if debug:
     print '============================'
 
 delete = []
-threshold = math.log(N) + 0.01
+threshold = math.log(N) - 0.01
 if debug:
     print ">>> Threshold :", 
     print threshold

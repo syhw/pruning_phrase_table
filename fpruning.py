@@ -15,8 +15,7 @@ Usage:
 import sys, getopt, math #, guppy
 #h = guppy.hpy()
 
-from fisher import FisherExactTest
-fish = FisherExactTest()
+import enrichment/enrichment
 
 def Usage():
     print "./pruning.py phrase-table [-d][-h][-o outputfile]"
@@ -142,11 +141,11 @@ if debug:
 for ks, kdic in dict_st.iteritems():
     for kt in kdic.iterkeys():
         try:
-            #print -math.log( fish.pvalue(dict_st[ks][kt], count_s[ks], \
+            #print -math.log( fisher_exact_text(dict_st[ks][kt], count_s[ks], \
             #        count_t[kt], N) [1] ) 
             #print k
-            if -math.log( fish.pvalue(dict_st[ks][kt], count_s[ks], \
-                    count_t[kt], N) [1] ) > threshold:
+            if -math.log( fisher_exact_test(dict_st[ks][kt], count_s[ks], \
+                    count_t[kt], N) [0] ) > threshold:
                 for l in lines[(ks, kt)]:
                     delete.append(l)
         except OverflowError:
