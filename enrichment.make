@@ -1,5 +1,5 @@
-PYTHON_INCLUDE_DIR=/usr/include/python2.5
-PYTHON_LIB_DIR=/usr/lib/
+PYTHON_INCLUDE_DIR=/opt/local/include/python2.5
+PYTHON_LIB_DIR=/opt/local/lib/
 PYTHON_LIB_NAME=python2.5
 
 all: enrichment_.so

@@ -88,3 +88,10 @@ PyMODINIT_FUNC initenrichment_ (void)
 {
 	(void)Py_InitModule("enrichment_", methods);
 }
+
+main()
+{
+	int a, b, c;
+	a, b, c = hypergeometric_distribution(2, 3, 2, 4);
+	printf("%g %g %g\n", a, b, c);
+}
