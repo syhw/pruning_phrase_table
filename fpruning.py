@@ -9,7 +9,7 @@ Usage:
     -o ouput file
 """
 # Copyright (C) 2009 
-# Authors: Gabriel Synnaeve & Nicolas Dumazet
+# Authors: Gabriel Synnaeve (& Nicolas Dumazet)
 # License: http://www.opensource.org/licenses/PythonSoftFoundation.php
 
 import sys, getopt, math #, guppy
@@ -49,30 +49,34 @@ lines = {}
 
 def count(line):
     table = line.replace('#','').replace('[','').replace(']','')\
-            .replace('?','').replace('!','').strip().split('|||') 
+            .replace('?','').replace('!','').replace(',','')\
+            .replace("'",'').replace('&quo','').replace(';','')\
+            .replace('--','')\
+            .replace('  ',' ').strip().split('|||') 
             # seems to be faster than with the RE '#\[\]?!'
-    source = table[0]
-    target = table[1]
-    if source in count_s:
-        count_s[source] +=  1
-    else: 
-        count_s[source] =  1
-    if target in count_t:
-        count_t[target] +=  1
-    else:
-        count_t[target] =  1
-    if source in dict_st:
-        d = dict_st[source]
-        if target in d:
-            d[target] += 1
+    source = table[0].strip()
+    target = table[1].strip()
+    if not source == '' and not target == '':
+        if source in count_s:
+            count_s[source] +=  1
+        else: 
+            count_s[source] =  1
+        if target in count_t:
+            count_t[target] +=  1
         else:
-            d[target] = 1
-    else:
-        dict_st[source] = {target:1}
-    if (source, target) in lines:
-        lines[(source, target)].append(N)
-    else:
-        lines[(source, target)] = [N]
+            count_t[target] =  1
+        if source in dict_st:
+            d = dict_st[source]
+            if target in d:
+                d[target] += 1
+            else:
+                d[target] = 1
+        else:
+            dict_st[source] = {target:1}
+        if (source, target) in lines:
+            lines[(source, target)].append(N)
+        else:
+            lines[(source, target)] = [N]
 
 #map(count, file)
 N = 0
@@ -144,14 +148,16 @@ for ks, kdic in dict_st.iteritems():
             #print -math.log( fisher_exact_text(dict_st[ks][kt], count_s[ks], \
             #        count_t[kt], N) [1] ) 
             #print k
-##            print "dict_st[ks][kt] ", 
-##            print dict_st[ks][kt]
-##            print "count_s[ks] ", 
-##            print count_s[ks]
-##            print "count_t[kt] ", 
-##            print count_t[kt]
-##            print "N ", 
-##            print N
+            print "dict_st[ks][kt] ", 
+            print dict_st[ks][kt]
+            print "count_s[ks] ", 
+            print count_s[ks]
+            print 'debut|'+ks+'|fin'
+            print "count_t[kt] ", 
+            print count_t[kt]
+            print 'debut|'+kt+'|fin'
+            print "N ", 
+            print N
             if -math.log( enrichment.fisher_exact_test(dict_st[ks][kt], \
                     count_s[ks], count_t[kt], N)[1] ) > threshold:
                 for l in lines[(ks, kt)]:
