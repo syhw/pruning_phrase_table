@@ -54,8 +54,10 @@ def count(line):
             .replace('--','')\
             .replace('  ',' ').strip().split('|||') 
             # seems to be faster than with the RE '#\[\]?!'
-    source = table[0].strip()
-    target = table[1].strip()
+    table[0] = ' '+table[0]+' '
+    table[1] = ' '+table[1]+' '
+    source = table[0]
+    target = table[1]
     if not source == '' and not target == '':
         if source in count_s:
             count_s[source] +=  1
@@ -92,7 +94,7 @@ for k in count_s.iterkeys():
     tmp = 0
     dico = {}
     for (s, v) in count_s.iteritems():
-        if k in s and k != s:
+        if ' '+k+' ' in s and k != s:
             tmp += v
             dico[s] = True
             if not s in sets:
@@ -104,7 +106,7 @@ for k in count_t.iterkeys():
     tmp = 0
     dico = {}
     for (t, v) in count_t.iteritems():
-        if k in t and k != t:
+        if ' '+k+' ' in t and k != t:
             tmp += v
             dico[t] = True
     included_in_t[k] = dico
@@ -145,19 +147,17 @@ if debug:
 for ks, kdic in dict_st.iteritems():
     for kt in kdic.iterkeys():
         try:
-            #print -math.log( fisher_exact_text(dict_st[ks][kt], count_s[ks], \
-            #        count_t[kt], N) [1] ) 
-            #print k
-            print "dict_st[ks][kt] ", 
-            print dict_st[ks][kt]
-            print "count_s[ks] ", 
-            print count_s[ks]
-            print 'debut|'+ks+'|fin'
-            print "count_t[kt] ", 
-            print count_t[kt]
-            print 'debut|'+kt+'|fin'
-            print "N ", 
-            print N
+            if debug:
+                print "dict_st[ks][kt] ", 
+                print dict_st[ks][kt]
+                print "count_s[ks] ", 
+                print count_s[ks]
+                print 'debut|'+ks+'|fin'
+                print "count_t[kt] ", 
+                print count_t[kt]
+                print 'debut|'+kt+'|fin'
+                print "N ", 
+                print N
             if -math.log( enrichment.fisher_exact_test(dict_st[ks][kt], \
                     count_s[ks], count_t[kt], N)[1] ) > threshold:
                 for l in lines[(ks, kt)]:
